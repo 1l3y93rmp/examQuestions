@@ -3,8 +3,13 @@ import { createStore } from 'redux'
 $(function () {
   function PhoneList (state = [], action) {
     switch (action.type) { // 判別type掉入相對應的操作中
-      case 'addDate':
+      case 'ADD':
         return state.concat([action.text])
+      case 'DELETE':
+        console.log(state)
+        console.log(action.deleteIndex)
+        state.splice(action.deleteIndex, 1)
+        return state
       default:
         return state
     }
@@ -12,8 +17,9 @@ $(function () {
 
   const store = createStore(
     PhoneList,
-    [{name: '王大明', telphone: '0939393939'}]) // 初始化 放入初始化的資料
+    [{name: '王大明', telphone: '0939393939', country: 'tw'}]) // 初始化 放入初始化的資料
 
+  /** ***************** */
   class ImputBox extends React.Component {
     constructor (props) {
       super(props)
@@ -21,10 +27,13 @@ $(function () {
     }
 
     addNewDate () {
-      // 開始用 type = addDate 的方法(上面設定的) 就可以加入資料了
+      // 開始用 type = ADD 的方法(上面設定的) 就可以加入資料了
       store.dispatch({
-        type: 'addDate',
-        text: {name: '王B明', telphone: '092s9128'}
+        type: 'ADD',
+        text: {
+          name: this.refs.name.value,
+          telphone: this.refs.telphone.value,
+          country: this.refs.country.value}
       })
     }
 
@@ -32,9 +41,9 @@ $(function () {
       return (
         <div>
           <h2>新增聯絡人</h2>
-          <input type='text' name='name' placeholder='姓名' />
-          <input type='text' name='telphone' placeholder='電話' />
-          <select name='country'>
+          <input type='text' ref='name' name='name' placeholder='姓名' />
+          <input type='text' ref='telphone' name='telphone' placeholder='電話' />
+          <select ref='country' name='country'>
             <option value='fiat' defaultValue >請選擇國家</option>
             <option value='tw'>台灣</option>
             <option value='cn'>中國</option>
@@ -47,21 +56,35 @@ $(function () {
   }
 
   class ListUl extends React.Component {
-    constructor (props, context) {
-      super()
+    constructor (props) {
+      super(props)
       this.state = {allList: store.getState()}
+      this.AAA = this.AAA.bind(this)
+    }
+
+    AAA (index) {
+      store.dispatch({type: 'DELETE', deleteIndex: index})
     }
     render () {
-      var ListLi = this.state.allList.map(function (node, index) {
+      var ListLi = this.state.allList.map((node, index) => {
         return (
           <li key={index}>
             <span>{node.name}</span>
             <span>{node.telphone}</span>
+            <span>
+              {node.country === 'tw' && '台灣'}
+              {node.country === 'cn' && '中國'}
+              {node.country === 'jp' && '日本'}
+              <button onClick={this.AAA.bind(this, index)} >刪除</button>
+            </span>
+
           </li>
         )
       })
       return (
-        <ul>{ListLi}</ul>
+        <ul>
+          {ListLi}
+        </ul>
       )
     }
     componentDidMount () {

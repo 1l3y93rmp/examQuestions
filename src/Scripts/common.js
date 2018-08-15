@@ -2,12 +2,11 @@ import { createStore } from 'redux'
 
 $(function () {
   function PhoneList (state = [], action) {
+    // action 攜帶參數進來
     switch (action.type) { // 判別type掉入相對應的操作中
       case 'ADD':
         return state.concat([action.text])
       case 'DELETE':
-        console.log(state)
-        console.log(action.deleteIndex)
         state.splice(action.deleteIndex, 1)
         return state
       default:
@@ -27,6 +26,25 @@ $(function () {
     }
 
     addNewDate () {
+      if (this.refs.name.value.length === 0) {
+        alert('請填寫聯絡人姓名')
+        this.refs.name.focus()
+        return
+      }
+
+      var regex = /^\d+$/
+
+      if (!regex.test(this.refs.telphone.value)) {
+        alert('請填寫聯絡人電話')
+        this.refs.telphone.focus()
+        return
+      }
+      if (this.refs.country.value === '') {
+        alert('請選擇聯絡人國家')
+        this.refs.country.focus()
+        return
+      }
+
       // 開始用 type = ADD 的方法(上面設定的) 就可以加入資料了
       store.dispatch({
         type: 'ADD',
@@ -44,7 +62,7 @@ $(function () {
           <input type='text' ref='name' name='name' placeholder='姓名' />
           <input type='text' ref='telphone' name='telphone' placeholder='電話' />
           <select ref='country' name='country'>
-            <option value='fiat' defaultValue >請選擇國家</option>
+            <option value='' defaultValue >請選擇國家</option>
             <option value='tw'>台灣</option>
             <option value='cn'>中國</option>
             <option value='jp'>日本</option>
@@ -59,10 +77,10 @@ $(function () {
     constructor (props) {
       super(props)
       this.state = {allList: store.getState()}
-      this.AAA = this.AAA.bind(this)
+      this.deleteDate = this.deleteDate.bind(this)
     }
 
-    AAA (index) {
+    deleteDate (index) {
       store.dispatch({type: 'DELETE', deleteIndex: index})
     }
     render () {
@@ -75,7 +93,7 @@ $(function () {
               {node.country === 'tw' && '台灣'}
               {node.country === 'cn' && '中國'}
               {node.country === 'jp' && '日本'}
-              <button onClick={this.AAA.bind(this, index)} >刪除</button>
+              <button onClick={this.deleteDate.bind(this, index)} >刪除</button>
             </span>
 
           </li>

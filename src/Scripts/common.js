@@ -94,7 +94,10 @@ $(function () {
     }
 
     deleteDate (index) {
-      store.dispatch({type: 'DELETE', deleteIndex: index})
+      var r = confirm('您確定要刪除這筆資料嗎?')
+      if (r==true) {
+        store.dispatch({type: 'DELETE', deleteIndex: index})
+      }
     }
     render () {
       var ListLi = this.state.allList.map((node, index) => {

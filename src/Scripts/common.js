@@ -1,4 +1,7 @@
 import { createStore } from 'redux'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import $ from 'jquery'
 
 $(function () {
   function PhoneList (state = [], action) {
@@ -18,7 +21,6 @@ $(function () {
     PhoneList,
     [{name: '王大明', telphone: '0939393939', country: 'tw'}]) // 初始化 放入初始化的資料
 
-  /** ***************** */
   class ImputBox extends React.Component {
     constructor (props) {
       super(props)
@@ -53,21 +55,34 @@ $(function () {
           telphone: this.refs.telphone.value,
           country: this.refs.country.value}
       })
+      this.refs.name.value = ''
+      this.refs.telphone.value = ''
+      this.refs.country.value = ''
     }
 
     render () {
       return (
         <div>
           <h2>新增聯絡人</h2>
-          <input type='text' ref='name' name='name' placeholder='姓名' />
-          <input type='text' ref='telphone' name='telphone' placeholder='電話' />
-          <select ref='country' name='country'>
-            <option value='' defaultValue >請選擇國家</option>
-            <option value='tw'>台灣</option>
-            <option value='cn'>中國</option>
-            <option value='jp'>日本</option>
-          </select>
-          <button onClick={this.addNewDate} >+</button>
+          <div className='row'>
+            <div className='form-group col-sm-4'>
+              <input className='form-control ds-input' type='text' ref='name' name='name' placeholder='姓名' />
+            </div>
+            <div className='form-group col-sm-4'>
+              <input className='form-control ds-input' type='text' ref='telphone' name='telphone' placeholder='電話' />
+            </div>
+            <div className='form-group col-sm-3'>
+              <select className='form-control' ref='country' name='country'>
+                <option value='' defaultValue >請選擇國家</option>
+                <option value='tw'>台灣</option>
+                <option value='cn'>中國</option>
+                <option value='jp'>日本</option>
+              </select>
+            </div>
+            <div className='form-group col-sm-1'>
+              <button className='btn btn-primary' onClick={this.addNewDate} >+</button>
+            </div>
+          </div>
         </div>
       )
     }
@@ -86,21 +101,20 @@ $(function () {
     render () {
       var ListLi = this.state.allList.map((node, index) => {
         return (
-          <li key={index}>
-            <span>{node.name}</span>
-            <span>{node.telphone}</span>
-            <span>
+          <li key={index} className='nav-item active row border-bottom p-1'>
+            <span className='col-sm-3 align-middle'>{node.name}</span>
+            <span className='col-sm-3 align-middle'>{node.telphone}</span>
+            <span className='col-sm-3 align-middle'>
               {node.country === 'tw' && '台灣'}
               {node.country === 'cn' && '中國'}
               {node.country === 'jp' && '日本'}
-              <button onClick={this.deleteDate.bind(this, index)} >刪除</button>
             </span>
-
+            <button className='btn btn-primary col-sm-3 btn-sm' onClick={this.deleteDate.bind(this, index)} >刪除</button>
           </li>
         )
       })
       return (
-        <ul>
+        <ul className='navbar-nav mr-auto'>
           {ListLi}
         </ul>
       )

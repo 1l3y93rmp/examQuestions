@@ -5,8 +5,7 @@ import $ from 'jquery'
 
 $(function () {
   function PhoneList (state = [], action) {
-    // action 攜帶參數進來
-    switch (action.type) { // 判別type掉入相對應的操作中
+    switch (action.type) {
       case 'ADD':
         return state.concat([action.text])
       case 'DELETE':
@@ -19,7 +18,7 @@ $(function () {
 
   const store = createStore(
     PhoneList,
-    [{name: '王大明', telphone: '0939393939', country: 'tw'}]) // 初始化 放入初始化的資料
+    [{name: '王大明', telphone: '0939393939', country: 'tw'}])
 
   class ImputBox extends React.Component {
     constructor (props) {
@@ -47,7 +46,6 @@ $(function () {
         return
       }
 
-      // 開始用 type = ADD 的方法(上面設定的) 就可以加入資料了
       store.dispatch({
         type: 'ADD',
         text: {
@@ -120,7 +118,6 @@ $(function () {
       )
     }
     componentDidMount () {
-      // 使用 store.subscribe 觸發 setState更新
       store.subscribe(() => {
         this.setState({
           allList: store.getState()
